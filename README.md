@@ -115,6 +115,10 @@ The `dev.ps1` PowerShell automation script provides a unified developer CLI wrap
 
 ## 5. AI Agent Integration & Buffer Specification
 
+> 💡 **Quick Prompt & Integration Guide:**  
+> - Ready-to-use Prompt Template: **[`prompts/agent-prompt.md`](prompts/agent-prompt.md)**  
+> - Step-by-Step Agent Integration Guide: **[`docs/agent-integration.md`](docs/agent-integration.md)**
+
 ### Buffer Discovery
 The plugin automatically scans and monitors the vault for files matching the configured glob pattern (default: `ai_suggestion-*.json`) and legacy files (`_agy_suggestions.json`).
 
@@ -213,6 +217,9 @@ Accessible via **Settings -> Community plugins -> AI Proposals**:
 ## 8. In-Depth Technical Documentation
 
 For developers, architects, and engineers learning TypeScript and the Obsidian API, the repository includes a comprehensive documentation suite in the `docs/` folder:
+
+- **[AI Agent Integration & Prompt Guide (`docs/agent-integration.md`)](docs/agent-integration.md)**:  
+  Step-by-step tutorial on how external AI models (Agy, Claude, Copilot, Droid, scripts) can generate valid proposal buffers without directly modifying Markdown files. Ready-to-use prompt template in [`prompts/agent-prompt.md`](prompts/agent-prompt.md).
 
 - **[System Architecture Guide (`docs/architecture.md`)](docs/architecture.md)**:  
   Detailed ASCII component topology, reactive data flows, 350ms write-lock debounce engine, pure coordinate math ($\Delta_{\text{ch}}$, $\Delta_{\text{lines}}$, auto-snap search $\pm 5$ lines, interval collision resolution), UI architecture, and Architectural Decision Records (ADR-001 through ADR-006).
