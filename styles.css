@@ -1,0 +1,792 @@
+/* ==========================================================================
+   AI Proposals Obsidian Plugin Stylesheet
+   Milestone 3: Editor CM6 Highlights, Insertion Markers & Floating Popover
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Editor Highlights & Decorations
+   -------------------------------------------------------------------------- */
+
+/* Standard text replacement / deletion marks */
+.ai-proposal-mark,
+.ai-proposal-decoration,
+.ai-proposal-highlight {
+  background-color: var(--ai-proposal-mark-bg, rgba(99, 102, 241, 0.18));
+  border-bottom: 2px dashed var(--interactive-accent, #7c3aed);
+  cursor: pointer;
+  border-radius: var(--radius-s, 2px);
+  padding: 0 1px;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.ai-proposal-mark:hover,
+.ai-proposal-decoration:hover,
+.ai-proposal-highlight:hover {
+  background-color: var(--ai-proposal-mark-bg-hover, rgba(99, 102, 241, 0.32));
+  border-bottom-style: solid;
+}
+
+/* Snapped / drifted anchors */
+.ai-proposal-mark.ai-proposal-mismatch,
+.ai-proposal-mark.ai-mismatch,
+.ai-proposal-decoration.ai-proposal-mismatch,
+.ai-proposal-decoration.ai-mismatch,
+.ai-proposal-highlight.ai-proposal-mismatch,
+.ai-proposal-highlight.ai-mismatch {
+  border-bottom-color: var(--text-warning, #f59e0b);
+  background-color: rgba(245, 158, 11, 0.18);
+}
+
+/* Zero-length pure insertion markers */
+.ai-proposal-mark-zero,
+.ai-proposal-insertion-marker,
+.ai-proposal-insertion-anchor {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+  vertical-align: baseline;
+  margin: 0 1px;
+}
+
+.ai-proposal-insertion-caret {
+  display: inline-block;
+  color: var(--interactive-accent, #7c3aed);
+  background-color: rgba(124, 58, 237, 0.2);
+  border: 1px solid var(--interactive-accent, #7c3aed);
+  border-radius: 3px;
+  padding: 0 3px;
+  font-size: 0.85em;
+  font-weight: bold;
+  line-height: 1;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.ai-proposal-insertion-marker:hover .ai-proposal-insertion-caret,
+.ai-proposal-mark-zero:hover .ai-proposal-insertion-caret,
+.ai-proposal-insertion-anchor:hover .ai-proposal-insertion-caret {
+  background-color: var(--interactive-accent, #7c3aed);
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   2. Floating Popover Container
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-popover {
+  position: fixed;
+  z-index: var(--layer-popover, 1000);
+  width: 360px;
+  max-width: min(380px, calc(100vw - 24px));
+  background-color: var(--background-primary, #1e1e1e);
+  border: 1px solid var(--background-modifier-border, #333333);
+  border-radius: var(--radius-m, 8px);
+  box-shadow: var(--shadow-l, 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3));
+  padding: 12px 14px;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 0.85rem);
+  color: var(--text-normal, #dcddde);
+  touch-action: manipulation;
+  box-sizing: border-box;
+  animation: ai-proposal-popover-enter 0.15s ease-out;
+}
+
+@keyframes ai-proposal-popover-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Popover Header & Metadata
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-popover-header,
+.ai-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.ai-proposal-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ai-proposal-rule-badge,
+.ai-popover-title {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  background-color: var(--background-modifier-accent, rgba(124, 58, 237, 0.15));
+  color: var(--text-accent, #a78bfa);
+  border-radius: var(--radius-s, 4px);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ai-proposal-author-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  background-color: var(--background-secondary, #2a2a2a);
+  color: var(--text-muted, #888888);
+  border-radius: var(--radius-s, 4px);
+  font-size: 0.72rem;
+}
+
+.ai-proposal-btn-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted, #888888);
+  line-height: 1;
+  transition: color 0.1s ease, background-color 0.1s ease;
+}
+
+.ai-proposal-btn-close:hover {
+  color: var(--text-normal, #ffffff);
+  background-color: var(--background-modifier-hover, rgba(255, 255, 255, 0.08));
+}
+
+/* --------------------------------------------------------------------------
+   4. Rationale / Explanation
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-explanation,
+.ai-popover-explanation {
+  margin-bottom: 10px;
+  color: var(--text-muted, #b3b3b3);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+   5. Diff Preview Container
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-diff,
+.ai-popover-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--background-secondary, #181818);
+  border: 1px solid var(--background-modifier-border, #2d2d2d);
+  border-radius: var(--radius-s, 6px);
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  max-height: 180px;
+  overflow-y: auto;
+  font-family: var(--font-monospace, monospace);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.ai-proposal-diff-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ai-proposal-diff-label {
+  flex-shrink: 0;
+  width: 42px;
+  color: var(--text-faint, #666666);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+/* Deletion styling */
+.ai-diff-del,
+.ai-proposal-deletion,
+.ai-proposal-diff-deletion {
+  flex-grow: 1;
+  color: var(--text-error, #f87171);
+  background-color: rgba(239, 68, 68, 0.15);
+  text-decoration: line-through;
+  border-radius: 3px;
+  padding: 1px 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Addition styling */
+.ai-diff-add,
+.ai-diff-ins,
+.ai-proposal-addition,
+.ai-proposal-diff-addition {
+  flex-grow: 1;
+  color: var(--text-success, #4ade80);
+  background-color: rgba(34, 197, 94, 0.15);
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 1px 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.ai-proposal-empty-note {
+  font-style: italic;
+  color: var(--text-faint, #777777);
+  font-size: 0.75rem;
+}
+
+.ai-proposal-diff-newline {
+  display: inline-block;
+  opacity: 0.5;
+  color: var(--text-faint, #888888);
+  font-weight: normal;
+  padding: 0 1px;
+}
+
+.ai-diff-prefix {
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Action Buttons
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-actions,
+.ai-popover-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-proposal-actions button,
+.ai-popover-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 6px 14px;
+  border-radius: var(--radius-s, 4px);
+  font-size: var(--font-ui-small, 0.82rem);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  touch-action: manipulation;
+}
+
+.ai-proposal-btn-reject,
+.ai-btn-reject {
+  background-color: var(--background-modifier-hover, rgba(255, 255, 255, 0.08));
+  color: var(--text-muted, #aaaaaa);
+  border: 1px solid var(--background-modifier-border, #444444);
+}
+
+.ai-proposal-btn-reject:hover,
+.ai-btn-reject:hover {
+  background-color: rgba(239, 68, 68, 0.18);
+  color: var(--text-error, #ef4444);
+  border-color: var(--text-error, #ef4444);
+}
+
+.ai-proposal-btn-accept,
+.ai-btn-accept {
+  background-color: var(--interactive-accent, #7c3aed);
+  color: var(--text-on-accent, #ffffff);
+  border: none;
+}
+
+.ai-proposal-btn-accept:hover,
+.ai-btn-accept:hover {
+  background-color: var(--interactive-accent-hover, #6d28d9);
+}
+
+.ai-proposal-actions button:disabled,
+.ai-proposal-actions button.is-loading,
+.ai-popover-actions button:disabled,
+.ai-popover-actions button.is-loading {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. Mobile & Touch Screen Adaptations
+   -------------------------------------------------------------------------- */
+
+.is-mobile .ai-proposal-popover {
+  width: calc(100vw - 20px);
+  max-width: 380px;
+  padding: 14px 16px;
+}
+
+.is-mobile .ai-proposal-actions button,
+.is-mobile .ai-popover-actions button,
+.is-mobile .ai-proposal-btn-close {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.is-mobile .ai-proposal-actions button,
+.is-mobile .ai-popover-actions button {
+  padding: 10px 18px;
+  font-size: 0.92rem;
+}
+
+.is-mobile .ai-proposal-diff,
+.is-mobile .ai-popover-diff {
+  max-height: 140px;
+}
+
+@media (max-width: 768px) {
+  .ai-proposal-popover {
+    width: calc(100vw - 20px);
+    max-width: 380px;
+    padding: 14px 16px;
+  }
+
+  .ai-proposal-actions button,
+  .ai-popover-actions button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 10px 18px;
+    font-size: 0.92rem;
+  }
+
+  .ai-proposal-btn-close {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .ai-proposal-diff,
+  .ai-popover-diff {
+    max-height: 140px;
+  }
+}
+
+/* ==========================================================================
+   Milestone 4: Sidebar ItemView, Two-Tier Grouping, Status Bar & Mobile
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   8. Root Sidebar View Container
+   -------------------------------------------------------------------------- */
+
+.ai-proposals-sidebar-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 8px 12px 24px 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 0.82rem);
+  color: var(--text-normal);
+  background-color: var(--background-primary);
+  touch-action: manipulation;
+}
+
+/* --------------------------------------------------------------------------
+   9. Summary & Stats Header Bar
+   -------------------------------------------------------------------------- */
+
+.ai-sidebar-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 12px 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+  margin-bottom: 12px;
+}
+
+.ai-sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-ui-medium, 1rem);
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: var(--background-modifier-border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.ai-badge.mod-active {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent, #ffffff);
+}
+
+/* --------------------------------------------------------------------------
+   10. Two-Tier Section Headers
+   -------------------------------------------------------------------------- */
+
+.ai-tier-section {
+  margin-bottom: 18px;
+}
+
+.ai-tier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--background-modifier-border-focus, rgba(255, 255, 255, 0.08));
+}
+
+.ai-tier-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text-accent, var(--interactive-accent));
+}
+
+.ai-tier-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  margin-left: 4px;
+  font-weight: normal;
+}
+
+/* --------------------------------------------------------------------------
+   11. Empty States & Placeholders
+   -------------------------------------------------------------------------- */
+
+.ai-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  text-align: center;
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-m, 8px);
+  border: 1px dashed var(--background-modifier-border);
+  margin: 8px 0;
+}
+
+.ai-empty-icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+
+.ai-empty-title {
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.ai-empty-subtitle {
+  font-size: 0.76rem;
+  color: var(--text-faint);
+  max-width: 260px;
+  line-height: 1.35;
+}
+
+/* --------------------------------------------------------------------------
+   12. Collapsible Accordion (Tier 2 Vault Files)
+   -------------------------------------------------------------------------- */
+
+.ai-file-accordion {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s, 6px);
+  margin-bottom: 8px;
+  background-color: var(--background-secondary);
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.ai-file-accordion:hover {
+  border-color: var(--interactive-accent);
+}
+
+.ai-file-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  background-color: var(--background-secondary-alt, var(--background-secondary));
+  gap: 8px;
+  transition: background-color 0.1s ease;
+}
+
+.ai-file-header:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.ai-accordion-chevron {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  width: 14px;
+  text-align: center;
+}
+
+.ai-file-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ai-file-name {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-normal);
+}
+
+.ai-file-accordion.is-collapsed .ai-file-cards {
+  display: none;
+}
+
+.ai-file-cards {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--background-primary);
+}
+
+/* --------------------------------------------------------------------------
+   13. Proposal Card Component
+   -------------------------------------------------------------------------- */
+
+.ai-proposal-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m, 6px);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-s, 0 1px 3px rgba(0, 0, 0, 0.1));
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  margin-bottom: 8px;
+}
+
+.ai-proposal-card:hover {
+  border-color: var(--interactive-accent);
+  box-shadow: var(--shadow-m, 0 3px 8px rgba(0, 0, 0, 0.15));
+}
+
+.ai-proposal-card.is-processing {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.ai-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.ai-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ai-card-coords {
+  font-family: var(--font-monospace);
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  padding: 1px 4px;
+  background-color: var(--background-primary);
+  border-radius: var(--radius-s, 3px);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.ai-card-time {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.ai-card-filepath {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  margin-bottom: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: var(--background-primary);
+}
+
+.ai-card-filepath:hover {
+  color: var(--text-accent);
+  text-decoration: underline;
+}
+
+.ai-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  gap: 6px;
+}
+
+.ai-action-buttons-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   14. Sidebar Action Buttons
+   -------------------------------------------------------------------------- */
+
+.ai-sidebar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 4px 10px;
+  border-radius: var(--radius-s, 4px);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  touch-action: manipulation;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
+}
+
+.ai-btn-navigate {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.ai-btn-navigate:hover {
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+  border-color: var(--text-normal);
+}
+
+.ai-sidebar-btn:disabled,
+.ai-sidebar-btn.is-loading {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   15. Status Bar Item
+   -------------------------------------------------------------------------- */
+
+.ai-proposals-status-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  padding: 0 4px;
+  font-size: var(--font-ui-smaller, 0.8rem);
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+.ai-proposals-status-bar.mod-clickable:hover {
+  color: var(--text-accent, var(--interactive-accent));
+}
+
+.ai-proposals-status-bar.has-proposals {
+  color: var(--text-accent, var(--interactive-accent));
+  font-weight: 600;
+}
+
+.ai-proposals-status-bar.no-proposals {
+  color: var(--text-faint);
+  opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   16. Mobile & Touch Screen Ergonomics (Touch Target >= 44px)
+   -------------------------------------------------------------------------- */
+
+.is-mobile .ai-proposals-sidebar-view {
+  padding: 6px 10px 40px 10px;
+}
+
+.is-mobile .ai-sidebar-btn,
+.is-mobile .ai-file-header {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.is-mobile .ai-card-actions {
+  flex-direction: column;
+  gap: 8px;
+}
+
+.is-mobile .ai-btn-navigate,
+.is-mobile .ai-action-buttons-right {
+  width: 100%;
+}
+
+.is-mobile .ai-action-buttons-right {
+  display: flex;
+  gap: 8px;
+}
+
+.is-mobile .ai-action-buttons-right .ai-sidebar-btn {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .ai-sidebar-btn,
+  .ai-file-header {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .ai-card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ai-btn-navigate,
+  .ai-action-buttons-right {
+    width: 100%;
+  }
+
+  .ai-action-buttons-right button {
+    flex: 1;
+  }
+}

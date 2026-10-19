@@ -1,0 +1,10 @@
+{
+  "id": "ai-proposals",
+  "name": "AI Proposals",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Safe bridge and interactive approval hub for AI proposals in Obsidian",
+  "author": "Mikołaj",
+  "authorUrl": "https://github.com",
+  "isDesktopOnly": false
+}

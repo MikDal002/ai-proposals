@@ -1,0 +1,40 @@
+x-service-base: &service-base
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: ai-proposals-dev:latest
+  volumes:
+    - .:/app
+    - ai-proposals-node-modules:/app/node_modules
+  environment:
+    - NODE_ENV=development
+
+services:
+  # Production build task (docker compose run --rm build)
+  build:
+    <<: *service-base
+    profiles: ["cli"]
+    environment:
+      - NODE_ENV=production
+    command: npm run build
+
+  # Headless unit test task (docker compose run --rm test)
+  test:
+    <<: *service-base
+    profiles: ["cli"]
+    environment:
+      - NODE_ENV=test
+    command: npm run test
+
+  # Incremental watch compiler (docker compose up watch)
+  watch:
+    <<: *service-base
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    tty: true
+    stdin_open: true
+
+volumes:
+  ai-proposals-node-modules:
+    name: ai-proposals-node-modules

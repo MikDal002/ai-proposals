@@ -1,0 +1,75 @@
+name: Release Obsidian Plugin
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    name: Build & Publish Release Assets
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript type checking
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Verify Git Tag Matches manifest.json Version
+        run: |
+          RAW_TAG="${GITHUB_REF#refs/tags/}"
+          TAG="${RAW_TAG#v}"
+          MANIFEST_VER=$(node -p "require('./manifest.json').version")
+          if [ "$TAG" != "$MANIFEST_VER" ]; then
+            echo "::error::Tag version ($TAG) does not match manifest.json version ($MANIFEST_VER)!"
+            exit 1
+          fi
+          echo "Verified: Git tag '$RAW_TAG' matches manifest.json version '$MANIFEST_VER'."
+
+      - name: Generate build artifact attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            dist/main.js
+            dist/manifest.json
+            dist/styles.css
+
+      - name: Create GitHub Release and Upload Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          
+          # Collect assets required by Obsidian community plugin registry
+          FILES=("dist/main.js" "dist/manifest.json")
+          if [ -f "dist/styles.css" ]; then
+            FILES+=("dist/styles.css")
+          fi
+          
+          gh release create "$TAG" \
+            --title="$TAG" \
+            --draft \
+            --generate-notes \
+            "${FILES[@]}"
